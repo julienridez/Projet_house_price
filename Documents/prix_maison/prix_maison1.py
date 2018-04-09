@@ -62,3 +62,28 @@ plt.xticks(rotation=90);
 corrmat = train.corr()
 f, ax = plt.subplots(figsize=(12, 9))
 sns.heatmap(corrmat, vmax=.8, square=True);
+
+#saleprice correlation matrix
+k = 10 #number of variables for heatmap
+cols = corrmat.nlargest(k, 'SalePrice')['SalePrice'].index
+cm = np.corrcoef(train[cols].values.T)
+sns.set(font_scale=1.25)
+hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 10}, yticklabels=cols.values, xticklabels=cols.values)
+plt.show()
+
+#scatterplot
+sns.set()
+cols = ['SalePrice', 'OverallQual', 'GrLivArea', 'GarageCars', 'TotalBsmtSF', 'FullBath', 'YearBuilt']
+sns.pairplot(train[cols], size = 2.5)
+plt.show();
+
+#missing data
+total = train.isnull().sum().sort_values(ascending=False)
+percent = (train.isnull().sum()/train.isnull().count()).sort_values(ascending=False)
+missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+print (missing_data.head(20))
+
+#dealing with missing data
+train = train.drop((missing_data[missing_data['Total'] > 1]).index,1)
+train = train.drop(train.loc[train['Electrical'].isnull()].index)
+print(train.isnull().sum().max()) #just checking that there's no missing data missing...
