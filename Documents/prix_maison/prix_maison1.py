@@ -11,15 +11,16 @@ warnings.filterwarnings('ignore')
 
 df = pd.read_csv('test.csv')
 train = pd.read_csv('train.csv')
-prix = pd.read_csv('sample_submission.csv') 
- 
+prix = pd.read_csv('sample_submission.csv')
+dataset = df
 
-print(df.columns)
-print(prix.columns)
+#print(df.columns)
+#print(prix.columns)
 
 correlation = train.corr()
 correlation = correlation['SalePrice'].abs().sort_values(ascending= False)
 print(correlation)
+corr_dataset = correlation
 
 x = 'SalePrice'
 y = 'OverallQual'
@@ -64,7 +65,7 @@ f, ax = plt.subplots(figsize=(12, 9))
 sns.heatmap(corrmat, vmax=.8, square=True);
 
 #saleprice correlation matrix
-k = 10 #number of variables for heatmap
+k = 11 #number of variables for heatmap
 cols = corrmat.nlargest(k, 'SalePrice')['SalePrice'].index
 cm = np.corrcoef(train[cols].values.T)
 sns.set(font_scale=1.25)
@@ -87,3 +88,29 @@ print (missing_data.head(20))
 train = train.drop((missing_data[missing_data['Total'] > 1]).index,1)
 train = train.drop(train.loc[train['Electrical'].isnull()].index)
 print(train.isnull().sum().max()) #just checking that there's no missing data missing...
+
+
+
+train['SalePrice'].describe()
+
+
+
+
+
+
+
+
+
+plt.figure(figsize=(20,15))
+sns.heatmap(corr_dataset, annot=True)
+corr_saleprice = corr_dataset['SalePrice'].sort_values(ascending = False)
+#print(corr_saleprice)
+dataset['YearBuilt']=pd.to_datetime(dataset.YearBuilt, format='%Y')
+dataset['YrSold']=pd.to_datetime(dataset.YrSold, format='%Y')
+dataset['YearRemodAdd']=pd.to_datetime(dataset.YearBuilt, format='%Y')
+dataset['GarageYrBlt']=pd.to_datetime(dataset.YearBuilt, format='%Y')
+
+datatest['YearBuilt']=pd.to_datetime(dataset.YearBuilt, format='%Y')
+datatest['YearRemodAdd']=pd.to_datetime(dataset.YearBuilt, format='%Y')
+datatest['GarageYrBlt']=pd.to_datetime(dataset.YearBuilt, format='%Y')
+datatest['YearRemodAdd']=pd.to_datetime(dataset.YearBuilt, format='%Y')
